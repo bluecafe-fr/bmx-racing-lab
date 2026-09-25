@@ -78,6 +78,14 @@ footer{color:#59636e;font-size:11px;padding:28px 0 0;text-align:center;letter-sp
 }
 @media(max-width:390px){.inputs{grid-template-columns:1fr}}
 </style>
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#06131c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BMX RACING LAB">
+<link rel="apple-touch-icon" href="icon-192.png">
+
 </head>
 <body>
 <div class="wrap">
@@ -214,5 +222,14 @@ function swap(){
 }
 calc();
 </script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+
 </body>
 </html>

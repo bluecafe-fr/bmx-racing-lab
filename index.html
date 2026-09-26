@@ -108,7 +108,7 @@ footer{color:#59636e;font-size:11px;padding:28px 0 0;text-align:center;letter-sp
 <button id="inBtn" onclick="setUnit('in')">距離 inch</button>
 <button onclick="swap()">A ⇄ B</button>
 </div>
-</header>
+<button id="forceUpdateBtn" type="button" style="border:1px solid #24d8ff;background:#071822;color:#bfefff;border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer;margin:8px;">↻ 最新版に更新</button></header>
 
 <div class="grid">
 <section class="card">
@@ -519,5 +519,33 @@ if ('serviceWorker' in navigator) {
 })();
 </script>
 
-</body>
+<script id="pwaAutoUpdate">
+(()=>{
+ const btn=document.getElementById('forceUpdateBtn');
+ async function forceLatest(){
+  if(btn){btn.disabled=true;btn.textContent='更新中…';}
+  try{
+   if('serviceWorker'in navigator){
+    const regs=await navigator.serviceWorker.getRegistrations();
+    await Promise.all(regs.map(r=>r.unregister()));
+   }
+   if('caches'in window){
+    const keys=await caches.keys();
+    await Promise.all(keys.map(k=>caches.delete(k)));
+   }
+   const u=new URL(location.href); u.searchParams.set('_update',Date.now());
+   location.replace(u.toString());
+  }catch(e){location.reload();}
+ }
+ if(btn)btn.addEventListener('click',forceLatest);
+ if('serviceWorker'in navigator){
+  window.addEventListener('load',async()=>{
+   try{
+    const reg=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
+    await reg.update();
+   }catch(e){}
+  });
+ }
+})();
+</script></body>
 </html>

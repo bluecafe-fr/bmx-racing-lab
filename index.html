@@ -462,7 +462,7 @@ function setLabelFor(id,text){
  const lab=el.closest('label'); if(!lab) return;
  for(const n of [...lab.childNodes]) if(n.nodeType===3){n.nodeValue=text; return;}
 }
-function applyLang(){
+function applyLang(){ window.lang=lang;
  const t=I18N[lang];
  document.documentElement.lang=lang;
  document.getElementById('subtitle').textContent=t.subtitle;
@@ -655,5 +655,60 @@ document.addEventListener('click',e=>{
  const menu=document.getElementById('worldMenu'), btn=document.getElementById('worldBtn');
  if(menu&&btn&&!menu.contains(e.target)&&!btn.contains(e.target)) menu.style.display='none';
 });
-</script></body>
+</script>
+<script id="tireDropdownI18n">
+(function(){
+ const tireWords={
+   ja:{diam:'外径',manual:'手動入力'},
+   en:{diam:'Diameter',manual:'Manual Input'},
+   ko:{diam:'외경',manual:'수동 입력'},
+   es:{diam:'Diámetro',manual:'Entrada manual'},
+   fr:{diam:'Diamètre',manual:'Saisie manuelle'},
+   pt:{diam:'Diâmetro',manual:'Entrada manual'},
+   de:{diam:'Durchmesser',manual:'Manuelle Eingabe'},
+   zh:{diam:'外径',manual:'手动输入'}
+ };
+ function localizeTireSelect(sel){
+   if(!sel) return;
+   const w=tireWords[window.lang]||tireWords.en;
+   [...sel.options].forEach(opt=>{
+     if(!opt.dataset.baseName){
+       let t=opt.textContent.trim();
+       if(opt.value==='manual' || /手動入力|Manual Input|수동 입력|Entrada manual|Saisie manuelle|Manuelle Eingabe|手动输入/.test(t)){
+         opt.dataset.baseName='__manual__';
+       }else{
+         // Keep tire name only; diameter is rebuilt from option's stored circumference.
+         t=t.replace(/\s*[（(]?\s*(?:外径|Diameter|외경|Diámetro|Diamètre|Diâmetro|Durchmesser)\s*[:：]?\s*\d+(?:\.\d+)?\s*mm\s*[）)]?\s*$/i,'').trim();
+         opt.dataset.baseName=t;
+       }
+     }
+     if(opt.dataset.baseName==='__manual__'){
+       opt.textContent=w.manual;
+       return;
+     }
+     let mm='';
+     const circ=parseFloat(opt.dataset.circ);
+     if(Number.isFinite(circ)) mm=(circ*25.4/Math.PI).toFixed(1);
+     if(!mm){
+       const d=parseFloat(opt.dataset.diameter||opt.dataset.mm);
+       if(Number.isFinite(d)) mm=d.toFixed(1);
+     }
+     opt.textContent=mm ? `${opt.dataset.baseName}  ${w.diam} ${mm}mm` : opt.dataset.baseName;
+   });
+ }
+ window.localizeTireDropdowns=function(){
+   document.querySelectorAll('select').forEach(sel=>{
+     if([...sel.options].some(o=>o.dataset.circ)) localizeTireSelect(sel);
+   });
+ };
+ const oldSetLang=window.setLang;
+ window.setLang=function(next){
+   oldSetLang(next);
+   window.localizeTireDropdowns();
+ };
+ document.addEventListener('DOMContentLoaded',()=>window.localizeTireDropdowns());
+ setTimeout(()=>window.localizeTireDropdowns(),0);
+})();
+</script>
+</body>
 </html>

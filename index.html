@@ -109,6 +109,26 @@ footer{color:#59636e;font-size:11px;padding:28px 0 0;text-align:center;letter-sp
   #worldBtn{max-width:58px!important}
 }
 </style>
+
+<style id="equalLanguageButtons">
+/* First row: Japanese / English / Globe — exactly equal widths */
+#langControls{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  width:100%!important;
+  gap:6px!important;
+}
+#langControls>button{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  justify-content:center!important;
+}
+#worldBtn{
+  max-width:none!important;
+}
+</style>
 </head>
 <body>
 <div class="wrap">

@@ -95,7 +95,21 @@ footer{color:#59636e;font-size:11px;padding:28px 0 0;text-align:center;letter-sp
 <style id="worldLanguageStyle">
 .worldLang{display:flex;align-items:center;width:100%;gap:4px;border:0;background:transparent;color:#d9f8ff;padding:9px 10px;border-radius:8px;text-align:left;font-weight:700;cursor:pointer}
 .worldLang:hover{background:#0b2a38}
-</style></head>
+</style>
+<style id="fixedTwoRowControls">
+/* Mobile/desktop: always keep controls in two fixed rows */
+.topControls{display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:7px!important}
+#langControls{display:flex!important;flex-wrap:nowrap!important;gap:6px!important;justify-content:flex-end!important}
+.unitrow{display:flex!important;flex-wrap:nowrap!important;gap:6px!important;justify-content:flex-end!important}
+#langControls>button,.unitrow>button{white-space:nowrap!important}
+@media(max-width:700px){
+  .topControls{width:100%!important;align-items:stretch!important}
+  #langControls,.unitrow{width:100%!important;justify-content:center!important}
+  #langControls>button,.unitrow>button{flex:1 1 0!important;min-width:0!important;padding-left:7px!important;padding-right:7px!important}
+  #worldBtn{max-width:58px!important}
+}
+</style>
+</head>
 <body>
 <div class="wrap">
 <header>
